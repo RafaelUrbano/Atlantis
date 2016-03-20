@@ -117,15 +117,6 @@ public class AtlantisPainter {
      */
     private static void paintUnits() {
         for (Unit unit : SelectUnits.ourIncludingUnfinished().list()) {
-            
-//            if ((unit.isWorker() && (unit.isBeingConstructed() || unit.isConstructing())) || unit.isBuilding()) {
-//                paintTextCentered(unit, "Target: " + unit.getTarget(), BWColor.Purple);
-//                paintTextCentered(unit.translated(0, 10), "BuildType: " + unit.getBuildType(), BWColor.Purple);
-//                paintTextCentered(unit.translated(0, 20), "BuildUnit: " + unit.getBuildUnit(), BWColor.Purple);
-//                paintTextCentered(unit.translated(0, 30), "Command: " + unit.getLastCommand(), BWColor.Purple);
-//                paintTextCentered(unit.translated(0, 40), "" + unit.getInitialType(), BWColor.Purple);
-//                paintTextCentered(unit.translated(0, 50), "" + unit.getType(), BWColor.Purple);
-//            }
 
             // =========================================================
             // === Paint life bars bars over wounded units
@@ -187,6 +178,11 @@ public class AtlantisPainter {
             paintLine(unit, unit.getTargetPosition(), BWColor.Grey);
             paintTextCentered(unit.translated(0, -10), "Build " + constructionOrder.getBuildingType(),
                     BWColor.Orange);
+        }
+        
+        // Paint unit last command if it's idle
+        if (unit.isIdle()) {
+            paintTextCentered(unit.translated(0, -15), "" + unit.getLastCommand(), BWColor.Purple);
         }
     }
 

@@ -1,6 +1,7 @@
 package atlantis.production.strategies;
 
 import atlantis.AtlantisConfig;
+import atlantis.AtlantisGame;
 import atlantis.buildings.managers.AtlantisBaseManager;
 import atlantis.workers.AtlantisWorkerCommander;
 import atlantis.workers.AtlantisWorkerManager;
@@ -18,15 +19,10 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
     }
 
     @Override
-    public void produceWorker() {
-        _produceUnit(AtlantisConfig.WORKER);
+    public void produceUnit(UnitType type) {
+        produceZergUnit(type);
     }
-
-    @Override
-    public void produceInfantry(UnitType infantryType) {
-        _produceUnit(infantryType);
-    }
-
+    
     @Override
     public ArrayList<UnitType> produceWhenNoProductionOrders() {
         ArrayList<UnitType> units = new ArrayList<>();
@@ -34,9 +30,15 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
             units.add(UnitTypes.Zerg_Drone);
         }
         else {
-            units.add(UnitTypes.Zerg_Mutalisk);
-            units.add(UnitTypes.Zerg_Zergling);
-            units.add(UnitTypes.Zerg_Hydralisk);
+            if (AtlantisGame.hasBuildingsToProduce(UnitTypes.Zerg_Mutalisk)) {
+                units.add(UnitTypes.Zerg_Mutalisk);
+            }
+            if (AtlantisGame.hasMinerals(400) && AtlantisGame.hasBuildingsToProduce(UnitTypes.Zerg_Zergling)) {
+                units.add(UnitTypes.Zerg_Zergling);
+            }
+            if (AtlantisGame.hasBuildingsToProduce(UnitTypes.Zerg_Hydralisk)) {
+                units.add(UnitTypes.Zerg_Hydralisk);
+            }
         }
         return units;
     }
@@ -47,24 +49,15 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
      * Produce zerg unit from free larva. Will do nothing if no free larva is available.
      */
     public void produceZergUnit(UnitType unitType) {
-        _produceUnit(unitType);
-    }
-    
-    // =========================================================
-    
-    protected void _produceUnit(UnitType unitType) {
-        for (Unit base : SelectUnits.ourBases().list()) {
-            for (Unit unit : base.getLarva()) {
-                base.train(unitType);
-                return;
-            }
+        Unit larva = SelectUnits.ourLarva().first();
+        if (larva != null) {
+            larva.train(unitType);
+            return;
         }
-    }
-
-    // =========================================================
-    // Auxiliary
-    private Unit getFreeLarva() {
-        return SelectUnits.our().ofType(UnitTypes.Zerg_Larva).first();
+        
+        if (larva != null) {
+            System.err.println("Shouldn't be here, couldn't produce unit: " + unitType);
+        }
     }
 
 }

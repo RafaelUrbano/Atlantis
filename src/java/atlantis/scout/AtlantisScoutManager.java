@@ -122,16 +122,16 @@ public class AtlantisScoutManager {
         if (AtlantisGame.playsAsZerg()) {
             if (AtlantisEnemyInformationManager.hasDiscoveredEnemyBuilding()) { // We know enemy building
                 scouts.clear();
-                if (AtlantisGame.getTimeSeconds() < 600) {
+                if (AtlantisGame.getTimeSeconds() < 250) {
                     scouts.add(SelectUnits.ourWorkers().first());
                 }
-//                if (scouts.size() > 1) {
-//                    scouts.clear();
-//                }
-//                if (scouts.isEmpty()) {
-//                    Unit zergling = SelectUnits.our().ofType(UnitType.UnitTypes.Zerg_Zergling).first();
-//                    scouts.add(zergling);
-//                }
+                else {
+                    if (scouts.size() > 1) {
+                        scouts.clear();
+                    }
+                    Unit zergling = SelectUnits.our().ofType(UnitType.UnitTypes.Zerg_Zergling).first();
+                    scouts.add(zergling);
+                }
             } // Haven't discovered any enemy building
             else {
                 scouts.clear();
@@ -140,12 +140,15 @@ public class AtlantisScoutManager {
         } 
 
         // =========================================================
-        // TERRAN + PRTOSSS
+        // TERRAN + PROTOSSS
         else if (scouts.isEmpty() && AtlantisUnitInformationManager.countOurWorkers() >= AtlantisConfig.SCOUT_IS_NTH_WORKER) {
             scouts.add(SelectUnits.ourWorkers().first());
         }
     }
 
+    /**
+     * Ensure that we have explored location of the next base location, so we can build there.
+     */
     private static void scoutForTheNextBase(Unit scout) {
         BaseLocation baseLocation = AtlantisMap.getNearestUnexploredStartingLocation(scout);
         if (baseLocation != null) {

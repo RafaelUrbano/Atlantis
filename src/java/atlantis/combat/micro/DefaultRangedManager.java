@@ -31,9 +31,9 @@ public class DefaultRangedManager extends MicroRangedManager {
             if (handleUnfavorableOdds(unit)) {
                 return true;
             }
-            if (handleNotExtremelyFavorableOdds(unit)) {
-                return true;
-            }
+//            if (handleNotExtremelyFavorableOdds(unit)) {
+//                return true;
+//            }
 
             // =========================================================
             // Don't spread too much

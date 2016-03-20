@@ -49,22 +49,18 @@ public class AtlantisGame {
     public static boolean hasBuildingsToProduce(UnitType unitType) {
 
         // Need to have every prerequisite building
+//        System.out.println("=== " + unitType);
         for (Integer unitTypeID : unitType.getRequiredUnits().keySet()) {
             UnitType requiredUnitType = UnitType.getByID(unitTypeID);
             
-//            if (requiredUnitType.isLarva()) {
-//                continue;
-//            }
-//            System.out.println("=req: " + requiredUnitType);
             if (!requiredUnitType.isBuilding()) {
-//                System.out.println("  continue");
                 continue;
             }
             
             int requiredAmount = unitType.getRequiredUnits().get(unitTypeID);
             int weHaveAmount = requiredUnitType.isLarva() ? 
                     SelectUnits.ourLarva().count() : SelectUnits.our().ofType(requiredUnitType).count();
-//            System.out.println(requiredUnitType + "    x" + requiredAmount);
+//            System.out.println("   need " + requiredUnitType + "    x" + requiredAmount);
 //            System.out.println("   and we have: " + weHaveAmount);
             if (weHaveAmount < requiredAmount) {
                 return false;
@@ -88,6 +84,9 @@ public class AtlantisGame {
     public static void changeSpeed(int speed) {
         AtlantisConfig.GAME_SPEED = speed;
         getBwapi().setGameSpeed(AtlantisConfig.GAME_SPEED);
+        
+        String speedString = AtlantisConfig.GAME_SPEED + (AtlantisConfig.GAME_SPEED == 0 ? " (Max)" : "");
+        sendMessage("Game speed: " + speedString);
     }
 
     /**

@@ -20,6 +20,11 @@ public abstract class MicroManager {
      */
     protected boolean handleUnfavorableOdds(Unit unit) {
         
+        // Air units should be allowed more engagement
+        if (unit.isAirUnit() && !unit.isWounded()) {
+            return false;
+        }
+        
         // If situation is unfavorable, retreat
         if (!AtlantisCombatEvaluator.isSituationFavorable(unit)) {
             if (unit.isJustShooting()) {
@@ -63,8 +68,20 @@ public abstract class MicroManager {
             return false;
         }
         
-        if (unit.getHP() <= 16 || unit.getHPPercent() < 30) {
-            if (unit.isAirUnit() || SelectUnits.ourCombatUnits().inRadius(4, unit).count() <= 6) {
+        // =========================================================
+
+        // Ground unit        
+        if (unit.isGroundUnit()) {
+            if (unit.getHP() <= 16 || unit.getHPPercent() < 30) {
+                if (SelectUnits.ourCombatUnits().inRadius(4, unit).count() <= 6) {
+                    return AtlantisRunManager.run(unit);
+                }
+            }
+        }
+        
+        // Air unit
+        else {
+            if (unit.getHP() <= 31 || unit.getHPPercent() < 30) {
                 return AtlantisRunManager.run(unit);
             }
         }

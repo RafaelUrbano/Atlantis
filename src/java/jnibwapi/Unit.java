@@ -1081,8 +1081,6 @@ public class Unit extends Position implements Cloneable, Comparable<Object> {
             return false; // Ignore this command request
         }
 
-        setTooltip("Forward!");
-
         return bwapi.issueCommand(new UnitCommand(this, UnitCommandTypes.Attack_Move, p, queued));
     }
 
@@ -1387,7 +1385,8 @@ public class Unit extends Position implements Cloneable, Comparable<Object> {
                 UnitTypes.Terran_Bunker, UnitTypes.Protoss_Photon_Cannon, UnitTypes.Zerg_Sunken_Colony
         );
         _isMilitaryBuildingAntiAir = isType(
-                UnitTypes.Terran_Bunker, UnitTypes.Protoss_Photon_Cannon, UnitTypes.Zerg_Spore_Colony
+                UnitTypes.Terran_Bunker, UnitTypes.Terran_Missile_Turret, 
+                UnitTypes.Protoss_Photon_Cannon, UnitTypes.Zerg_Spore_Colony
         );
     }
 

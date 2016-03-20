@@ -69,25 +69,6 @@ public class AtlantisGasManager {
     
     // =========================================================
     
-    /**
-     * Returns first gas extracting building that needs a worker (because has less than 3 units assigned) or
-     * null if every gas building has 3 workers assigned.
-     */
-//    private static Unit getOneGasBuildingNeedingWorker() {
-//        Collection<Unit> gasBuildings = SelectUnits.ourBuildings().ofType(AtlantisConfig.GAS_BUILDING).list();
-//        Collection<Unit> workers = SelectUnits.ourWorkers().list();
-//
-//        for (Unit gasBuilding : gasBuildings) {
-////            int numberOfWorkersAssigned = countWorkersAssignedTo(gasBuilding, workers);
-//            int numberOfWorkersAssigned = AtlantisWorkerManager.getHowManyWorkersAt(gasBuilding);
-//            if (numberOfWorkersAssigned < MIN_GAS_WORKERS_PER_BUILDING) {
-//                return gasBuilding;
-//            }
-//        }
-//
-//        return null;
-//    }
-
     private static Unit getWorkerForGasBuilding(Unit gasBuilding) {
         Unit worker = SelectUnits.ourWorkers().gatheringMinerals(true).first();
         return worker;
@@ -96,34 +77,15 @@ public class AtlantisGasManager {
     public static int defineMinGasWorkersPerBuilding() {
         int seconds = AtlantisGame.getTimeSeconds();
         
-        if (seconds < 350) {
+        if (seconds < 150) {
             return 1;
         }
-        else if (seconds < 500) {
+        else if (seconds < 200) {
             return 2;
         }
         else {
             return 3;
         }
-        
-//        return Math.max(1, 
-//                Math.min(MIN_GAS_WORKERS_PER_BUILDING, (int) ((AtlantisGame.getTimeSeconds() - 90) / 90))
-//        );
     }
-
-    // =========================================================
-    /**
-     * Returns number of workers that are assigned to gather gas in given building.
-     */
-//    private static int countWorkersAssignedTo(Unit gasBuilding, Collection<Unit> workers) {
-//        int total = 0;
-//        for (Unit worker : workers) {
-////            if (worker.getTarget() != null && worker.getTarget().equals(gasBuilding)) {
-//            if (gasBuilding.equals(worker.getTarget()) || gasBuilding.equals(worker.getOrderTarget())) {
-//                total++;
-//            }
-//        }
-//        return total;
-//    }
 
 }

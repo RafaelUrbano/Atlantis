@@ -47,23 +47,7 @@ public class AtlantisProduceUnitManager {
     // Hi-level produce
     
     private static void produceUnit(UnitType unitType) {
-
-        // Worker
-        if (unitType.equals(AtlantisConfig.WORKER)) {
-            produceWorker();
-        } 
-
-        // =========================================================
-        // Infantry
-        else if (unitType.isInfantry()) {
-            produceInfantry(unitType);
-        } 
-
-        // =========================================================
-        // We don't know what to do
-        else {
-            System.err.println("UNHANDLED UNIT TYPE TO PRODUCE: " + unitType);
-        }
+        AtlantisProductionStrategy.getProductionStrategy().produceUnit(unitType);
     }
 
     private static void researchUpgrade(UpgradeType upgrade) {
@@ -87,12 +71,12 @@ public class AtlantisProduceUnitManager {
         AtlantisConstructingManager.requestConstructionOf(unitType, order);
     }
     
-    private static void produceWorker() {
-        AtlantisConfig.getProductionStrategy().produceWorker();
-    }
-
-    private static void produceInfantry(UnitType infantryType) {
-        AtlantisConfig.getProductionStrategy().produceInfantry(infantryType);
-    }
+//    private static void produceWorker() {
+//        AtlantisConfig.getProductionStrategy().produceWorker();
+//    }
+//
+//    private static void produceInfantry(UnitType infantryType) {
+//        AtlantisConfig.getProductionStrategy().produceInfantry(infantryType);
+//    }
 
 }

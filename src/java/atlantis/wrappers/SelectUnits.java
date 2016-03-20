@@ -2,6 +2,7 @@ package atlantis.wrappers;
 
 import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
+import atlantis.AtlantisGame;
 import java.util.Collection;
 import java.util.Iterator;
 import jnibwapi.Position;
@@ -210,7 +211,8 @@ public class SelectUnits {
         units.addUnits(Atlantis.getBwapi().getNeutralUnits());
         SelectUnits selectUnits = new SelectUnits(units);
 
-        return selectUnits.ofType(UnitTypes.Resource_Mineral_Field);
+        return selectUnits.ofType(UnitTypes.Resource_Mineral_Field, 
+                UnitTypes.Resource_Mineral_Field_Type_2, UnitTypes.Resource_Mineral_Field_Type_3);
     }
 
     /**
@@ -431,7 +433,13 @@ public class SelectUnits {
      * Selects all of our bases.
      */
     public static SelectUnits ourBases() {
-        return our().ofType(AtlantisConfig.BASE);
+        if (AtlantisGame.playsAsZerg()) {
+            return ourIncludingUnfinished()
+                    .ofType(UnitTypes.Zerg_Hatchery, UnitTypes.Zerg_Lair, UnitTypes.Zerg_Hive);
+        }
+        else {
+            return our().ofType(AtlantisConfig.BASE);
+        }
     }
 
     /**

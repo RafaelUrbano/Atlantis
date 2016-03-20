@@ -1,10 +1,12 @@
 package atlantis.workers;
 
+import atlantis.AtlantisGame;
 import atlantis.constructing.AtlantisBuilderManager;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Unit;
+import jnibwapi.types.UnitCommandType;
 
 public class AtlantisWorkerManager {
 
@@ -19,7 +21,7 @@ public class AtlantisWorkerManager {
             AtlantisBuilderManager.update(unit);
         } // ORDINARY WORKER
         else {
-            sendToGatherMineralsOrGas(unit);
+            ensureWorkerIsNotIdle(unit);
         }
 
         updateTooltip(unit);
@@ -30,15 +32,15 @@ public class AtlantisWorkerManager {
      * Assigns given worker unit (which is idle by now ar least doesn't have anything to do) to gather
      * minerals.
      */
-    private static void sendToGatherMineralsOrGas(Unit worker) {
+    private static void ensureWorkerIsNotIdle(Unit worker) {
 
         // If basically unit is not doing a shit, send it to gather resources (minerals or gas).
         // But check for multiple conditions (like if isn't constructing, repairing etc).
-        if (worker.isIdle()
+        if (worker.isIdle() || worker.getLastCommand().equals(UnitCommandType.UnitCommandTypes.Train)
                 || (!worker.isGatheringMinerals() && !worker.isGatheringGas() && !worker.isMoving()
                 && !worker.isConstructing() && !worker.isAttacking() && !worker.isRepairing())) {
-            worker.setTooltip("Move ya ass!");
             AtlantisMineralGathering.gatherResources(worker);
+            worker.setTooltip("Move ya ass!");
         }
     }
 

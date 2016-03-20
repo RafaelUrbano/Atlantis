@@ -1,5 +1,6 @@
 package atlantis.workers;
 
+import atlantis.AtlantisGame;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
 import java.util.Collection;
@@ -40,9 +41,13 @@ public class AtlantisMineralGathering {
         if (mineralField != null) {
             unit.gather(mineralField, false);
         }
+        else if (AtlantisGame.getTimeSeconds() < 500) {
+            System.err.println("Can't find mineral for worker! " + unit);
+        }
     }
 
     // =========================================================
+    
     private static Unit getMineralFieldToGather(Unit worker) {
 
         // Get nearest base for this unit
@@ -52,7 +57,7 @@ public class AtlantisMineralGathering {
         }
 
         // Get minerals near to our main base and sort them from closest to most distant one
-        Units minerals = SelectUnits.minerals().inRadius(12, base).units()
+        Units minerals = SelectUnits.minerals().inRadius(14, base).units()
                 .sortByDistanceTo(SelectUnits.mainBase(), true);
         
         if (!minerals.isEmpty()) {

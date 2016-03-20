@@ -202,6 +202,7 @@ public class AtlantisConstructingManager {
      *
      */
     protected static void removeOrder(ConstructionOrder constructionOrder) {
+        constructionOrder.setStatus(ConstructionOrderStatus.CONSTRUCTION_FINISHED);
         constructionOrders.remove(constructionOrder);
     }
 

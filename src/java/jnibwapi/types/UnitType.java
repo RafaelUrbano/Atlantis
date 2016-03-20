@@ -17,10 +17,6 @@ public class UnitType implements Comparable<UnitType> {
 
     private static Map<Integer, UnitType> idToUnitType = new HashMap<>();
 
-    public boolean isLarva() {
-        return this.equals(UnitTypes.Zerg_Larva);
-    }
-
     public static class UnitTypes {
 
         public static final UnitType Terran_Marine = new UnitType(0);
@@ -820,5 +816,17 @@ public class UnitType implements Comparable<UnitType> {
     public boolean isGasBuilding() {
         return isType(UnitTypes.Terran_Refinery, UnitTypes.Protoss_Assimilator, UnitTypes.Zerg_Extractor);
     }
+    
+    public boolean isLarva() {
+        return this.equals(UnitTypes.Zerg_Larva);
+    }
 
+    public boolean isAirUnit() {
+        return isFlyer();
+    }
+
+    public boolean isGroundUnit() {
+        return !isFlyer();
+    }
+    
 }

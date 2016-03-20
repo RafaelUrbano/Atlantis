@@ -116,26 +116,28 @@ public class AtlantisCombatEvaluator {
             double unitStrengthEval = evaluateUnitHPandDamage(otherUnit, againstUnit);
             
             // WORKER
-            if (otherUnit.isWorker()) {
-                strength += 0.2 * unitStrengthEval;
-            } 
+//            if (otherUnit.isWorker()) {
+//                strength += 0.2 * unitStrengthEval;
+//            } 
             
             // =========================================================
             // BUILDING
-            else if (otherUnit.isBuilding() && otherUnit.isCompleted()) {
-                boolean antiGround = (againstUnit != null ? againstUnit.isGroundUnit() : true);
-                boolean antiAir = (againstUnit != null ? againstUnit.isAirUnit() : true);
-                if (otherUnit.isMilitaryBuilding(antiGround, antiAir)) {
-                    enemyDefensiveBuildingFound = true;
-                    if (otherUnit.isBunker()) {
-                        strength += 7 * evaluateUnitHPandDamage(UnitType.UnitTypes.Terran_Marine, againstUnit);
-                    }
-                    else {
-                        strength += 1.3 * unitStrengthEval;
-                    }
-                    
-                    if (otherUnit.distanceTo(againstUnit) <= 8.5) {
-                        enemyDefensiveBuildingInRange = true;
+            if (otherUnit.isBuilding()) {
+                if (otherUnit.isCompleted()) {
+                    boolean antiGround = (againstUnit != null ? againstUnit.isGroundUnit() : true);
+                    boolean antiAir = (againstUnit != null ? againstUnit.isAirUnit() : true);
+                    if (otherUnit.isMilitaryBuilding(antiGround, antiAir)) {
+                        enemyDefensiveBuildingFound = true;
+                        if (otherUnit.isBunker()) {
+                            strength += 7 * evaluateUnitHPandDamage(UnitType.UnitTypes.Terran_Marine, againstUnit);
+                        }
+                        else {
+                            strength += 1.3 * unitStrengthEval;
+                        }
+
+                        if (otherUnit.distanceTo(againstUnit) <= 8.5) {
+                            enemyDefensiveBuildingInRange = true;
+                        }
                     }
                 }
             } 
@@ -143,8 +145,10 @@ public class AtlantisCombatEvaluator {
             // =========================================================
             // Ordinary MILITARY UNIT
             else {
-                if (otherUnit.canAttackThisKindOfUnit(againstUnit, false)) {
-                    strength += unitStrengthEval;
+                if (otherUnit.isCompleted()) {
+                    if (otherUnit.canAttackThisKindOfUnit(againstUnit, false)) {
+                        strength += unitStrengthEval;
+                    }
                 }
             }
         }

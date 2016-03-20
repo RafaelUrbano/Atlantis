@@ -4,7 +4,10 @@ import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.constructing.AtlantisConstructingManager;
 import static atlantis.constructing.AtlantisConstructingManager.requestConstructionOf;
+import atlantis.production.ProductionOrder;
+import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.wrappers.SelectUnits;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,6 +16,21 @@ import atlantis.wrappers.SelectUnits;
 public class AtlantisExpansionManager {
 
     public static void requestNewBaseIfNeeded() {
+        
+        // It makes sense to think about expansion only if we have a lot of minerals.
+        if (!AtlantisGame.hasMinerals(400)) {
+            return;
+        }
+        
+        // If there're still things to produce, don't auto-expand.
+        ArrayList<ProductionOrder> nextOrders = 
+                AtlantisProductionStrategy.getProductionStrategy().getProductionQueueNext(5);
+        if (nextOrders.size() >= 3 && !AtlantisGame.hasMinerals(500)) {
+            return;
+        }
+        
+        // =========================================================
+        
         boolean haveEnoughMinerals = AtlantisGame.hasMinerals(490)
                 || (AtlantisGame.playsAsZerg() && AtlantisGame.hasMinerals(342));
         boolean haveEnoughBases = SelectUnits.ourBases().count() >= 7 

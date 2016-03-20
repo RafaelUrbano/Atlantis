@@ -100,7 +100,7 @@ public class AtlantisRunning {
         
         // Tell them to run as well, not to block our escape route
         for (Unit ourOtherUnit : ourUnitsNearby) {
-            if (!ourOtherUnit.isRunning()) {
+            if (ourOtherUnit.isGroundUnit() && !ourOtherUnit.isRunning()) {
                 if (!unit.isMeleeUnit()) {
                     ourOtherUnit.runFrom(null);
                 }

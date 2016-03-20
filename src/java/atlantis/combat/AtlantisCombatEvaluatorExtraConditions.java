@@ -66,6 +66,11 @@ public class AtlantisCombatEvaluatorExtraConditions {
 
     private static boolean shouldRetreatBecauseTooFewOurUnitsAround() {
         
+        // Flying units can always attack lonely
+        if (unit.isAirUnit()) {
+            return false;
+        }
+        
         // If nearest enemy is far, ignore it
         if (isNearestEnemyQuiteFar()) {
             return false;

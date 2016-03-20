@@ -59,7 +59,14 @@ public abstract class AtlantisProductionStrategy {
         System.exit(-1);
         return null;
     }
-
+    
+    /**
+     * Returns object that is responsible for the production queue.
+     */
+    public static AtlantisProductionStrategy getProductionStrategy() {
+        return AtlantisConfig.getProductionStrategy();
+    }
+    
     // =========================================================
     // Abstract methods
     /**
@@ -68,15 +75,20 @@ public abstract class AtlantisProductionStrategy {
     protected abstract String getFilename();
 
     /**
+     * Request to produce any non-building unit. Should be handled differently, according to the race played.
+     */
+    public abstract void produceUnit(UnitType type);
+    
+    /**
      * Request to produce worker (Zerg Drone, Terran SCV or Protoss Probe) that should be handled according to
      * the race played.
      */
-    public abstract void produceWorker();
+//    public abstract void produceWorker();
 
     /**
      * Request to produce infantry unit that should be handled according to the race played.
      */
-    public abstract void produceInfantry(UnitType infantryType);
+//    public abstract void produceInfantry(UnitType infantryType);
 
     /**
      * When production orders run out, we should always produce some units.
@@ -189,7 +201,6 @@ public abstract class AtlantisProductionStrategy {
             // =========================================================
 
             if (unitType != null) {
-//                debug(unitType, UnitTypes.Zerg_Spire, "AtlantisGame.hasBuildingsToProduce(unitType) = ", AtlantisGame.hasBuildingsToProduce(unitType));
                 if (!AtlantisGame.hasBuildingsToProduce(unitType)) {
                     continue;
                 }
@@ -217,15 +228,17 @@ public abstract class AtlantisProductionStrategy {
 
         // =========================================================
         // Produce something if queue is empty
-        if (result.isEmpty() && AtlantisGame.getSupplyUsed() >= 9) {
+        if (result.isEmpty() && mineralsNeeded == 0 && gasNeeded == 0) {
             for (UnitType unitType : produceWhenNoProductionOrders()) {
                 result.add(new ProductionOrder(unitType));
             }
         }
         
-//        System.out.println("// == Things to produce ============================================");
-//        for (ProductionOrder order : result) {
-//        System.out.println(order.getUnitType());
+//        if (!result.isEmpty()) {
+//            System.out.println("// == Things to produce ============================================");
+//            for (ProductionOrder order : result) {
+//            System.out.println(order.getUnitType());
+//            }
 //        }
 
         return result;
@@ -249,10 +262,10 @@ public abstract class AtlantisProductionStrategy {
     /**
      * Returns <b>howMany</b> of next units to build, no matter if we can afford them or not.
      */
-    public ArrayList<ProductionOrder> getProductionQueueNext(int howMany) {
+    public ArrayList<ProductionOrder> getProductionQueueNext(int maximumResults) {
         ArrayList<ProductionOrder> result = new ArrayList<>();
 
-        for (int i = 0; i < howMany && i < currentProductionQueue.size(); i++) {
+        for (int i = 0; i < maximumResults && i < currentProductionQueue.size(); i++) {
             ProductionOrder productionOrder = currentProductionQueue.get(i);
             result.add(productionOrder);
         }
@@ -363,6 +376,7 @@ public abstract class AtlantisProductionStrategy {
         
         // =========================================================
         // Check for modifiers
+        // @see constants of class AtlantisSpecialPositionFinder
         
         if (row.length >= 3) {
             String modifierString = row[inRowCounter++].toUpperCase().trim();
