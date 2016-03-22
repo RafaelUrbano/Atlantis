@@ -4,9 +4,9 @@ import atlantis.Atlantis;
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.constructing.AtlantisConstructingManager;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.production.ProductionOrder;
-import atlantis.util.RUtilities;
+import atlantis.util.AtlantisUtilities;
 import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
@@ -170,6 +170,14 @@ public abstract class AtlantisProductionStrategy {
                 = AtlantisConstructingManager.countResourcesNeededForNotStartedConstructions();
         int mineralsNeeded = resourcesNeededForNotStartedBuildings[0];
         int gasNeeded = resourcesNeededForNotStartedBuildings[1];
+        
+        // =========================================================
+        // If terrible situation, no or little workers, build only workers
+        if (AtlantisGame.getSupplyTotal() <= 3) {
+            result.add(new ProductionOrder(AtlantisConfig.WORKER));
+            result.add(new ProductionOrder(AtlantisConfig.WORKER));
+            return result;
+        }
 
         // =========================================================
         // The idea as follows: as long as we can afford next enqueued production order, add it to the
@@ -250,12 +258,12 @@ public abstract class AtlantisProductionStrategy {
      */
     private int countUnitsOfGivenTypeOrSimilar(UnitType type) {
         if (type.equals(UnitType.UnitTypes.Zerg_Creep_Colony)) {
-            return AtlantisUnitInformationManager.countOurUnitsOfType(type) +
-                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.UnitTypes.Zerg_Sunken_Colony)
-                    + AtlantisUnitInformationManager.countOurUnitsOfType(UnitType.UnitTypes.Zerg_Spore_Colony);
+            return SelectUnits.ourIncludingUnfinished().ofType(
+                    type, UnitType.UnitTypes.Zerg_Sunken_Colony, UnitType.UnitTypes.Zerg_Spore_Colony
+            ).count();
         }
         else {
-            return AtlantisUnitInformationManager.countOurUnitsOfType(type);
+            return SelectUnits.ourIncludingUnfinished().ofType(type).count();
         }
     }
 
@@ -289,7 +297,7 @@ public abstract class AtlantisProductionStrategy {
 
         // Read file into 2D String array
         String path = BUILD_ORDERS_PATH + getFilename();
-        String[][] loadedFile = RUtilities.loadCsv(path, NUMBER_OF_COLUMNS_IN_FILE);
+        String[][] loadedFile = AtlantisUtilities.loadCsv(path, NUMBER_OF_COLUMNS_IN_FILE);
 
         // We can display file here, if we want to
 //         displayLoadedFile(loadedFile);

@@ -8,6 +8,8 @@ import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import jnibwapi.Unit;
+import jnibwapi.UnitCommand;
+import jnibwapi.types.UnitCommandType;
 import jnibwapi.types.UnitType;
 import jnibwapi.types.UnitType.UnitTypes;
 
@@ -15,7 +17,9 @@ public class ZergProductionStrategy extends AtlantisProductionStrategy {
 
     @Override
     protected String getFilename() {
-        return "ZergDefault.csv";
+        String ourRaceLetter = AtlantisGame.getPlayerUs().getRace().getLetter();
+        String enemyRaceLetter = AtlantisGame.getEnemy().getRace().getLetter();
+        return ourRaceLetter + "v" + enemyRaceLetter + ".csv";
     }
 
     @Override

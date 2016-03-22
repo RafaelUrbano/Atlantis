@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import jnibwapi.Position;
-import atlantis.information.AtlantisMap;
-import atlantis.util.RUtilities;
+import atlantis.enemy.AtlantisMap;
+import atlantis.util.AtlantisUtilities;
 
 /**
  * This class is wrapper for ArrayList<Position>. It allows some helpful methods to be executed upon group of positions
@@ -83,7 +83,7 @@ public class Positions<T extends Position> {
 	 * Returns random positions.
 	 */
 	public Position getRandom() {
-		return (Position) RUtilities.getRandomListElement(positions);
+		return (Position) AtlantisUtilities.getRandomListElement(positions);
 	}
 
 	/**

@@ -28,6 +28,9 @@ public class DefaultRangedManager extends MicroRangedManager {
 
             // =========================================================
             // Check chances to win the fight
+            if (handleMoveAwayFromEnemiesIfNeeded(unit)) {
+                return true;
+            }
             if (handleUnfavorableOdds(unit)) {
                 return true;
             }
@@ -50,7 +53,8 @@ public class DefaultRangedManager extends MicroRangedManager {
             // =========================================================
             // False: Did not use micro-manager, allow mission behavior
             // True: Do not allow mission manager to handle this unit
-            boolean canGiveCommandToMissionManager = unit.getGroundWeaponCooldown() > 0;
+            boolean canGiveCommandToMissionManager = 
+                    unit.getGroundWeaponCooldown() > 0 && unit.getAirWeaponCooldown() > 0;
             return canGiveCommandToMissionManager;
         } 
 

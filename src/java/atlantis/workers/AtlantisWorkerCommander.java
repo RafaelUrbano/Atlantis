@@ -3,7 +3,7 @@ package atlantis.workers;
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.buildings.managers.AtlantisGasManager;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.wrappers.SelectUnits;
 import atlantis.wrappers.Units;
 import java.util.Collection;
@@ -21,8 +21,17 @@ public class AtlantisWorkerCommander {
         AtlantisGasManager.handleGasBuildings();
         handleNumberOfWorkersNearBases();
 
-        for (Unit unit : SelectUnits.ourWorkers().list()) {
-            AtlantisWorkerManager.update(unit);
+        for (Unit worker : SelectUnits.ourWorkers().list()) {
+            
+            // WORKER DEFENCE if needed: attack other workers, run from enemies etc.
+            if (AtlantisWorkerDefenceManager.handleDefenceIfNeeded(worker)) {
+                // Overrided and executed, do nothing
+            }
+            
+            // Standard worker behavior
+            else {
+                AtlantisWorkerManager.update(worker);
+            }
         }
     }
 
@@ -40,20 +49,22 @@ public class AtlantisWorkerCommander {
             return false;
         }
 
-        int workers = AtlantisUnitInformationManager.countOurWorkers();
+        int workers = SelectUnits.ourWorkers().count();
 
         // Check if not TOO MANY WORKERS
-        if (workers >= 27 * AtlantisUnitInformationManager.countOurBases()) {
+        if (workers >= 27 * SelectUnits.ourBases().count()) {
             return false;
         }
 
         // Check if AUTO-PRODUCTION of WORKERS is active.
-        if (workers < AtlantisConfig.AUTO_PRODUCE_WORKERS_UNTIL_N_WORKERS) {
+        if (workers >= AtlantisConfig.AUTO_PRODUCE_WORKERS_SINCE_N_WORKERS 
+                && workers < AtlantisConfig.AUTO_PRODUCE_WORKERS_UNTIL_N_WORKERS
+                && workers < AtlantisConfig.AUTO_PRODUCE_WORKERS_MAX_WORKERS
+                && (!AtlantisGame.playsAsZerg() || SelectUnits.ourLarva().count() >= 2)) {
             return true;
         }
-
         // Check if ALLOWED TO PRODUCE IN PRODUCTION QUEUE
-//        if (!AtlantisGame.getProductionStrategy().shouldProduceNow(AtlantisConfig.WORKER)) {
+//        if (!AtlantisGame.getProductionStrategy().getThingsToProduceRightNow(false).contains(AtlantisConfig.WORKER)) {
 //            return false;
 //        }
 //        if (!AtlantisGame.getProductionStrategy().getThingsToProduceRightNow(true).isEmpty()) {

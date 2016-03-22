@@ -109,4 +109,10 @@ public class RaceType {
 		return equals(RaceTypes.Zerg);
 	}
 
+        /**
+         * Returns letterfor the race like: Z, T, P or R.
+         */
+          public String getLetter() {
+              return name.charAt(0) + "";
+          }
 }

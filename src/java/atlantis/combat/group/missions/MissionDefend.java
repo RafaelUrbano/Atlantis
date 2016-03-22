@@ -1,6 +1,6 @@
 package atlantis.combat.group.missions;
 
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.ChokePoint;
 import jnibwapi.Unit;

@@ -2,7 +2,7 @@ package atlantis;
 
 import static atlantis.Atlantis.getBwapi;
 import atlantis.production.strategies.AtlantisProductionStrategy;
-import atlantis.util.RUtilities;
+import atlantis.util.AtlantisUtilities;
 import atlantis.wrappers.AtlantisTech;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Player;
@@ -53,7 +53,7 @@ public class AtlantisGame {
         for (Integer unitTypeID : unitType.getRequiredUnits().keySet()) {
             UnitType requiredUnitType = UnitType.getByID(unitTypeID);
             
-            if (!requiredUnitType.isBuilding()) {
+            if (!requiredUnitType.isBuilding() || requiredUnitType.isLarva()) {
                 continue;
             }
             
@@ -179,7 +179,7 @@ public class AtlantisGame {
      * Returns random int number from range [min, max], both inclusive.
      */
     public static int rand(int min, int max) {
-        return RUtilities.rand(min, max);
+        return AtlantisUtilities.rand(min, max);
     }
 
     /**

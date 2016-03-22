@@ -2,7 +2,8 @@ package atlantis;
 
 import atlantis.combat.group.AtlantisGroupManager;
 import atlantis.constructing.ProtossConstructionManager;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.debug.AtlantisUnitTypesHelper;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.init.AtlantisInitialActions;
 import atlantis.production.strategies.AtlantisProductionStrategy;
 import jnibwapi.BWAPIEventListener;
@@ -133,6 +134,9 @@ public class Atlantis implements BWAPIEventListener {
      */
     @Override
     public void matchStart() {
+        
+        // Uncomment this line to see list of units -> damage.
+        // AtlantisUnitTypesHelper.displayUnitTypesDamage();
 
         // #### INITIALIZE CONFIG AND PRODUCTION QUEUE ####
         // =========================================================
@@ -213,7 +217,6 @@ public class Atlantis implements BWAPIEventListener {
     public void unitCreate(int unitID) {
         Unit unit = Unit.getByID(unitID);
         if (unit != null) {
-            AtlantisUnitInformationManager.rememberUnit(unit);
 
             // Our unit
             if (unit.getPlayer().isSelf()) {
@@ -252,13 +255,12 @@ public class Atlantis implements BWAPIEventListener {
     @Override
     public void unitDestroy(int unitID) {
 
-        // We need to get unit by ID, but we need to use our own solution, because normally if we iterated against
-        // objects in getAllUnits(), dead unit objects would be gone. But if we manually save them, we can access them
-        // at this point, when they're already dead.
-        Unit unit = AtlantisUnitInformationManager.getUnitByID(unitID);
-
+        // We need to get unit by ID, but we need to use our own solution, because dead unit objects 
+        // would be gone. But if we manually save them, we can access them at this point, even when 
+        // they're already dead.
+        Unit unit = AtlantisEnemyUnits.getEnemyUnitByID(unitID);
         if (unit != null) {
-            AtlantisUnitInformationManager.unitDestroyed(unit);
+            AtlantisEnemyUnits.unitDestroyed(unit);
 
             // Our unit
             if (unit.getPlayer().isSelf()) {
@@ -273,11 +275,12 @@ public class Atlantis implements BWAPIEventListener {
         }
 
         // Forever forget this poor unit
-        AtlantisUnitInformationManager.forgetUnit(unitID);
+        AtlantisEnemyUnits.forgetUnit(unitID);
 
         // =========================================================
         // Game SPEED change
-        if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED_SLOWDOWN && !_dynamicSlowdown_isSlowdownActive && !unit.isBuilding()) {
+        if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED_SLOWDOWN 
+                && !_dynamicSlowdown_isSlowdownActive && !unit.isBuilding()) {
             activateDynamicSlowdownMode();
         }
     }
@@ -290,17 +293,10 @@ public class Atlantis implements BWAPIEventListener {
     public void unitDiscover(int unitID) {
         Unit unit = Unit.getByID(unitID);
         if (unit != null) {
-            AtlantisUnitInformationManager.rememberUnit(unit);
 
             // Enemy unit
             if (unit.getPlayer().isEnemy()) {
-                AtlantisUnitInformationManager.discoveredEnemyUnit(unit);
-
-                // =========================================================
-                // Game SPEED change
-//                if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED && !_isSpeedInSlodownMode) {
-//                    enableSlowdown();
-//                }
+                AtlantisEnemyUnits.discoveredEnemyUnit(unit);
             }
         }
     }
@@ -317,14 +313,13 @@ public class Atlantis implements BWAPIEventListener {
      */
     @Override
     public void unitHide(int unitID) {
-        Unit unit = Unit.getByID(unitID);
-        if (unit != null) {
-
-            // Enemy unit
-            if (unit.getPlayer().isEnemy()) {
-                AtlantisUnitInformationManager.removeEnemyUnitVisible(unit);
-            }
-        }
+//        Unit unit = Unit.getByID(unitID);
+//        if (unit != null) {
+//
+//            // Enemy unit
+//            if (unit.getPlayer().isEnemy()) {
+//            }
+//        }
     }
 
     /**
@@ -335,37 +330,39 @@ public class Atlantis implements BWAPIEventListener {
     @Override
     public void unitMorph(int unitID) {
         
-        
-        // =========================================================
         // A bit of safe approach: forget the unit and remember it again.
-        Unit unit = AtlantisUnitInformationManager.getUnitByID(unitID);
+        Unit unit = AtlantisEnemyUnits.getEnemyUnitByID(unitID);
 
         if (unit != null) {
-            AtlantisUnitInformationManager.unitDestroyed(unit);
+            AtlantisEnemyUnits.unitDestroyed(unit);
 
             // Our unit
             if (unit.getPlayer().isSelf()) {
                 AtlantisGroupManager.battleUnitDestroyed(unit);
             }
             else if (unit.getPlayer().isEnemy()) {
-                AtlantisUnitInformationManager.discoveredEnemyUnit(unit);
+                AtlantisEnemyUnits.discoveredEnemyUnit(unit);
             }
         }
 
         // Forever forget this poor unit
-        AtlantisUnitInformationManager.forgetUnit(unitID);
+        AtlantisEnemyUnits.forgetUnit(unitID);
         
         // =========================================================
         // Remember the unit
         if (unit != null) {
-            AtlantisUnitInformationManager.rememberUnit(unit);
 
             // Our unit
-            if (unit.getPlayer().isSelf()) {
+            if (unit.isOur()) {
                 AtlantisGame.getProductionStrategy().rebuildQueue();
                 if (!unit.isLarvaOrEgg()) {
                     AtlantisGroupManager.possibleCombatUnitCreated(unit);
                 }
+            }
+            
+            // Enemy unit
+            else if (unit.isEnemy()) {
+                AtlantisEnemyUnits.refreshEnemyUnit(unit);
             }
         }
     }
@@ -375,14 +372,13 @@ public class Atlantis implements BWAPIEventListener {
      */
     @Override
     public void unitShow(int unitID) {
-        Unit unit = Unit.getByID(unitID);
-        if (unit != null) {
-
-            // Enemy unit
-            if (unit.getPlayer().isEnemy()) {
-                AtlantisUnitInformationManager.addEnemyUnitVisible(unit);
-            }
-        }
+//        Unit unit = Unit.getByID(unitID);
+//        if (unit != null) {
+//
+//            // Enemy unit
+//            if (unit.getPlayer().isEnemy()) {
+//            }
+//        }
     }
 
     /**
@@ -390,7 +386,7 @@ public class Atlantis implements BWAPIEventListener {
      */
     @Override
     public void unitRenegade(int unitID) {
-        Unit unit = AtlantisUnitInformationManager.getUnitByID(unitID);
+        Unit unit = AtlantisEnemyUnits.getEnemyUnitByID(unitID);
         if (unit != null) {
             AtlantisGame.getProductionStrategy().rebuildQueue();
         }
@@ -408,16 +404,33 @@ public class Atlantis implements BWAPIEventListener {
         // 27 (Esc) - pause/unpause game
         if (keyCode == 27) {
             pauseOrUnpause();
-        } // 107 (+) - increase game speed
+        } 
+
+        // =========================================================
+        // 107 (+) - increase game speed
         else if (keyCode == 107) {
-            AtlantisConfig.GAME_SPEED -= 2;
+            if (AtlantisConfig.GAME_SPEED > 2) {
+                AtlantisConfig.GAME_SPEED -= 10;
+            }
+            else {
+                AtlantisConfig.GAME_SPEED -= 2;
+            }
+            
             if (AtlantisConfig.GAME_SPEED < 0) {
                 AtlantisConfig.GAME_SPEED = 0;
             }
             AtlantisGame.changeSpeed(AtlantisConfig.GAME_SPEED);
-        } // 109 (-) - decrease game speed
+        } 
+
+        // =========================================================
+        // 109 (-) - decrease game speed
         else if (keyCode == 109) {
-            AtlantisConfig.GAME_SPEED += 2;
+            if (AtlantisConfig.GAME_SPEED > 2) {
+                AtlantisConfig.GAME_SPEED += 10;
+            }
+            else {
+                AtlantisConfig.GAME_SPEED += 2;
+            }
             AtlantisGame.changeSpeed(AtlantisConfig.GAME_SPEED);
         }
     }

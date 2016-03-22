@@ -400,6 +400,7 @@ public class SelectUnits {
             Unit unit = unitsIterator.next();
             boolean isMilitaryBuilding = unit.isType(
                     UnitTypes.Terran_Bunker,
+                    UnitTypes.Terran_Missile_Turret,
                     UnitTypes.Protoss_Photon_Cannon,
                     UnitTypes.Zerg_Sunken_Colony,
                     UnitTypes.Zerg_Spore_Colony
@@ -427,6 +428,37 @@ public class SelectUnits {
         return this;
     }
 
+    /**
+     * Selects only those units from current selection, which are both <b>capable of attacking</b> given unit
+     * (e.g. Zerglings can't attack Overlord) and are <b>in shot range</b> to the given <b>unit</b>.
+     */
+    public SelectUnits thatCanShoot(Unit targetUnit) {
+        Iterator<Unit> unitsIterator = units.iterator();
+        while (unitsIterator.hasNext()) {
+            Unit unit = unitsIterator.next();
+//            boolean isMilitaryBuilding = unit.isType(
+//                    UnitTypes.Terran_Bunker,
+//                    UnitTypes.Terran_Missile_Turret,
+//                    UnitTypes.Protoss_Photon_Cannon,
+//                    UnitTypes.Zerg_Sunken_Colony,
+//                    UnitTypes.Zerg_Spore_Colony
+//            );
+            if (!unit.isCompleted() || !unit.isAlive()) {
+//                boolean isMilitaryBuildingOfProperType = (unit.isBuilding() && !unit.isMilitaryBuilding(
+//                    targetUnit.isGroundUnit(), targetUnit.isAirUnit()));
+                boolean isInShotRange = unit.hasRangeToAttack(targetUnit, 0.5);
+                if (!isInShotRange) {
+                    unitsIterator.remove();
+                }
+                else {
+                    System.out.println(unit.getType().getShortName() + " in range (" 
+                            + unit.distanceTo(targetUnit) + ") to attack " + targetUnit.getType().getShortName());
+                }
+            }
+        }
+        return this;
+    }
+    
     // =========================================================
     // Hi-level auxiliary methods
     /**
@@ -438,7 +470,7 @@ public class SelectUnits {
                     .ofType(UnitTypes.Zerg_Hatchery, UnitTypes.Zerg_Lair, UnitTypes.Zerg_Hive);
         }
         else {
-            return our().ofType(AtlantisConfig.BASE);
+            return ourIncludingUnfinished().ofType(AtlantisConfig.BASE);
         }
     }
 
@@ -594,7 +626,7 @@ public class SelectUnits {
     public static Unit secondBaseOrMainIfNoSecond() {
         Collection<Unit> bases = SelectUnits.ourBases().list();
         if (bases.size() <= 1) {
-            return bases.iterator().next();
+            return SelectUnits.ourBases().first();
         }
         else {
             Iterator<Unit> iterator = bases.iterator();
@@ -661,17 +693,6 @@ public class SelectUnits {
         return this;
     }
 
-    // private SelectUnits filterOut(Unit unitToRemove) {
-    // // units.removeUnit(unitToRemove);
-    // Iterator<Unit> unitsIterator = units.iterator();
-    // while (unitsIterator.hasNext()) {
-    // Unit unit = unitsIterator.next();
-    // if (unitToRemove.equals(unit)) {
-    // units.removeUnit(unit);
-    // }
-    // }
-    // return this;
-    // }
     @SuppressWarnings("unused")
     private SelectUnits filterAllBut(Unit unitToLeave) {
         Iterator<Unit> unitsIterator = units.iterator();

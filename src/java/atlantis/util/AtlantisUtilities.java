@@ -51,7 +51,7 @@ import javax.swing.border.Border;
  *
  * @author Rafaelles <rafaelles.org>
  */
-public class RUtilities {
+public class AtlantisUtilities {
 
     /**
      * <b>Random</b> object that can be used in any part of code.
@@ -280,8 +280,8 @@ public class RUtilities {
      * Displays given exception in user friendly way (with exception name and stack).
      */
     public static void displayException(Exception e, String title, String preText) {
-        RUtilities.displayError(title,
-                preText + "\n\n" + e.getMessage() + "\n\n" + RUtilities.convertStackToString(10, e.getStackTrace()));
+        AtlantisUtilities.displayError(title,
+                preText + "\n\n" + e.getMessage() + "\n\n" + AtlantisUtilities.convertStackToString(10, e.getStackTrace()));
     }
 
     /**
@@ -318,7 +318,7 @@ public class RUtilities {
         panel.setVisible(true);
         frame.add(panel);
         frame.setSize(panel.getSize());
-        RUtilities.centerFrameOnScreen(frame);
+        AtlantisUtilities.centerFrameOnScreen(frame);
         frame.setVisible(visible);
         return frame;
     }
@@ -368,7 +368,7 @@ public class RUtilities {
 
         String text = date.get(Calendar.YEAR) + "-" + month + "-" + day;
         String result = "";
-        for (String part : RUtilities.implodeList(text, '-')) {
+        for (String part : AtlantisUtilities.implodeList(text, '-')) {
             if (result.length() > 0) {
                 result += ".";
             }
@@ -432,7 +432,7 @@ public class RUtilities {
      * Returns string like 2011-06-09 21:20:59
      */
     public static String getDateAndTime() {
-        return RUtilities.getTodayAsString() + " " + RUtilities.getCurrentTimeAsString();
+        return AtlantisUtilities.getTodayAsString() + " " + AtlantisUtilities.getCurrentTimeAsString();
     }
 
     /**
@@ -536,7 +536,7 @@ public class RUtilities {
                 return out;
             }
         } catch (Exception e) {
-            RUtilities.displayException(e, "Błąd", "Błąd przy zapisywaniu do pliku\n" + "saveToFile(\"" + filePath
+            AtlantisUtilities.displayException(e, "Błąd", "Błąd przy zapisywaniu do pliku\n" + "saveToFile(\"" + filePath
                     + "\", \"" + stringToWrite + "\")");
         }
         return null;
@@ -621,7 +621,7 @@ public class RUtilities {
      */
     public static void displayETA(long timeStart, int alreadyProcessed, int totalToProcess) {
         double seconds = ((double) (System.currentTimeMillis() - timeStart) / (1000 * alreadyProcessed));
-        String eta = RUtilities
+        String eta = AtlantisUtilities
                 .convertSecondsToDisplayableFormat((int) ((totalToProcess - alreadyProcessed) * seconds));
         System.out.println("It took " + String.format("%.1f", seconds) + "s. " + alreadyProcessed * 100
                 / totalToProcess + "% objects (" + alreadyProcessed + "/" + totalToProcess + ") ready. ETA: " + eta);
@@ -676,7 +676,7 @@ public class RUtilities {
 
             scanner.close();
         } catch (Exception e) {
-            RUtilities.displayException(e);
+            AtlantisUtilities.displayException(e);
         }
         return resultList;
     }
@@ -812,7 +812,7 @@ public class RUtilities {
                 try {
                     callable.call();
                 } catch (Exception ex) {
-                    RUtilities.displayException(ex);
+                    AtlantisUtilities.displayException(ex);
                 }
             }
         });
@@ -890,7 +890,7 @@ public class RUtilities {
      */
     public static double median(Collection<Double> list, boolean mathematicMedian) {
         if (list.isEmpty()) {
-            RUtilities.displayMessage("List for computing a median is empty!");
+            AtlantisUtilities.displayMessage("List for computing a median is empty!");
             return -1;
         }
         if (list.size() == 1) {

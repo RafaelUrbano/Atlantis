@@ -1,7 +1,7 @@
 package atlantis.constructing.position;
 
 import atlantis.constructing.ConstructionOrder;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 import jnibwapi.Position;
 import jnibwapi.Unit;
 import jnibwapi.types.UnitType;

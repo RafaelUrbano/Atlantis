@@ -1,7 +1,7 @@
 package atlantis.combat.group.missions;
 
-import atlantis.information.AtlantisEnemyInformationManager;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisEnemyInformation;
+import atlantis.enemy.AtlantisMap;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.BaseLocation;
 import jnibwapi.Position;
@@ -68,13 +68,13 @@ public class MissionAttack extends Mission {
     public static Position getFocusPoint() {
 
         // Try going near enemy base
-        Position enemyBase = AtlantisEnemyInformationManager.getEnemyBase();
+        Position enemyBase = AtlantisEnemyInformation.getEnemyBase();
         if (enemyBase != null) {
             return enemyBase;
         }
 
         // Try going near any enemy building
-        Unit enemyBuilding = AtlantisEnemyInformationManager.getNearestEnemyBuilding();
+        Unit enemyBuilding = AtlantisEnemyInformation.getNearestEnemyBuilding();
         if (enemyBuilding != null) {
             return enemyBuilding;
         }

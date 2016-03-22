@@ -2,7 +2,7 @@ package atlantis.buildings.managers;
 
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.workers.AtlantisWorkerCommander;
 import jnibwapi.Unit;
 

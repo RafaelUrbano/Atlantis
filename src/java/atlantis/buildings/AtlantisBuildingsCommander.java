@@ -18,21 +18,28 @@ public class AtlantisBuildingsCommander {
         for (Unit building : SelectUnits.ourBuildings().list()) {
 
             // If building is busy, don't disturb.
-            if (building.getTrainingQueueSize() > 0 || building.isUpgrading()) {
+            if (building.getTrainingQueueSize() > 0) {
                 continue;
             }
-
-            // =========================================================
-            // BASE (Command Center / Nexus / Hatchery / Lair / Hive)
-            if (building.isBase()) {
-                AtlantisBaseManager.update(building);
-            } 
 
             // =========================================================
             // BARRACKS (Barracks, Gateway, Spawning Pool)
             else if (building.isType(AtlantisConfig.BARRACKS)) {
                 AtlantisBarracksManager.update(building);
             }
+        }
+        
+        // =========================================================
+        // Handled separately to produce workers at the end
+        
+        for (Unit building : SelectUnits.ourBases().list()) {
+            
+            // =========================================================
+            // BASE (Command Center / Nexus / Hatchery / Lair / Hive)
+            if (building.isBase()) {
+                AtlantisBaseManager.update(building);
+            } 
+
         }
     }
 

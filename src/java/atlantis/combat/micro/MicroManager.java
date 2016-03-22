@@ -36,9 +36,9 @@ public abstract class MicroManager {
         }
 
         // If unit is running, allow it to stop running only if chances are quite favorable
-        if (unit.isRunning() && AtlantisCombatEvaluator.evaluateSituation(unit) >= 0.3) {
-            AtlantisRunManager.unitWantsStopRunning(unit);
-        }
+//        if (unit.isRunning() && AtlantisCombatEvaluator.evaluateSituation(unit) >= 0.3) {
+//            AtlantisRunManager.unitWantsStopRunning(unit);
+//        }
         
         return false;
     }
@@ -64,7 +64,7 @@ public abstract class MicroManager {
      */
     protected boolean handleLowHealthIfNeeded(Unit unit) {
         Unit nearestEnemy = SelectUnits.nearestEnemy(unit);
-        if (nearestEnemy == null || nearestEnemy.distanceTo(unit) > 6) {
+        if (nearestEnemy == null || nearestEnemy.distanceTo(unit) > 8) {
             return false;
         }
         
@@ -81,7 +81,18 @@ public abstract class MicroManager {
         
         // Air unit
         else {
-            if (unit.getHP() <= 31 || unit.getHPPercent() < 30) {
+            
+            // Calculate safety margin according to number of nearby enemies
+            double nearbyEnemiesInRangeFactor = 0;
+            for (Unit enemy : SelectUnits.enemy().thatCanShoot(unit).list()) {
+                nearbyEnemiesInRangeFactor += enemy.getWeaponAgainst(unit).getDamageNormalized();
+            }
+//            if (nearbyEnemiesInRangeFactor > 0) {
+//                System.err.println(nearbyEnemiesInRangeFactor + " hp penalty");
+//            }
+            
+            
+            if (unit.getHP() - nearbyEnemiesInRangeFactor <= 10 || unit.getHPPercent() < 30) {
                 return AtlantisRunManager.run(unit);
             }
         }
@@ -116,4 +127,19 @@ public abstract class MicroManager {
         return false;
     }
 
+    /**
+     *
+     */
+    public boolean handleMoveAwayFromEnemiesIfNeeded(Unit unit) {
+        if (unit.isGroundUnit() && !unit.isMeleeUnit()) {
+            Unit nearestEnemy = SelectUnits.enemyRealUnits().nearestTo(unit);
+            if (nearestEnemy != null && nearestEnemy.distanceTo(unit) < 1) {
+                unit.moveAwayFrom(nearestEnemy, 0.5);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
 }

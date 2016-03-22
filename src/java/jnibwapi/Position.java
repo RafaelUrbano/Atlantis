@@ -1,7 +1,7 @@
 package jnibwapi;
 
 import atlantis.Atlantis;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 
 /**
  * Generalised representation of a position for JNIBWAPI. Immutable.

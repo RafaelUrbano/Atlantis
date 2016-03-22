@@ -22,6 +22,7 @@ import jnibwapi.types.UnitType.UnitTypes;
 import jnibwapi.types.UpgradeType;
 import jnibwapi.types.UpgradeType.UpgradeTypes;
 import jnibwapi.types.WeaponType;
+import jnibwapi.types.WeaponType.WeaponTypes;
 
 /**
  * Represents a StarCraft unit.
@@ -1750,6 +1751,9 @@ public class Unit extends Position implements Cloneable, Comparable<Object> {
         _lastCombatEval = eval;
     }
 
+    /**
+     * Returns cached value (but only for the time of one frame) of Combat Evaluation. 
+     */
     public double getCombatEvalCachedValueIfNotExpired() {
         if (AtlantisGame.getTimeFrames() <= _lastTimeCombatEval) {
             return _lastCombatEval;
@@ -1759,10 +1763,16 @@ public class Unit extends Position implements Cloneable, Comparable<Object> {
         }
     }
 
+    /**
+     * Returns anti-air weapon of this unit. If no such weapon, then WeaponTypes.None will be returned.
+     */
     public WeaponType getAirWeapon() {
         return getType().getAirWeapon();
     }
 
+    /**
+     * Returns anti-ground weapon of this unit. If no such weapon, then WeaponTypes.None will be returned.
+     */
     public WeaponType getGroundWeapon() {
         return getType().getGroundWeapon();
     }
@@ -1802,28 +1812,45 @@ public class Unit extends Position implements Cloneable, Comparable<Object> {
     public ConstructionOrder getConstructionOrder() {
         return AtlantisConstructingManager.getConstructionOrderFor(this);
     }
+
+    /**
+     * Returns <b>true</b> if this unit can attack <b>targetUnit</b> in terms of both min and max range 
+     * conditions fulfilled.
+     * @param safetyMargin allowed error (in tiles) applied to the max distance condition
+     */
+    public boolean hasRangeToAttack(Unit targetUnit, double safetyMargin) {
+        WeaponType weaponAgainstThisUnit = getWeaponAgainst(targetUnit);
+        double dist = this.distanceTo(targetUnit);
+        return weaponAgainstThisUnit != WeaponTypes.None 
+                && weaponAgainstThisUnit.getMaxRange() <= (dist + safetyMargin) 
+                && weaponAgainstThisUnit.getMinRange() >= dist;
+    }
     
     /**
-     * Returns <b>true</b> if this unit is supposed to "build" something.
-     * @param boolean includeAbstractOrders if <b>true</b> then even if the unit wasn't issued build order, 
-     * but we've created ConstructionOrder and assigned it as a builder, it will return true. <b>false</b>
-     * will force to return true only if there was actual BroodWar build command issued.
+     * Returns weapon that would be used to attack given target. 
+     * If no such weapon, then WeaponTypes.None will be returned.
      */
-//    public boolean isBuilder(boolean includeAbstractOrders) {
-//        if (getBuildType() != null || getBuildUnit() != null) {
-//            return true;
-//        }
-//        
-//        // Check for the ConstructionOrders and see if this unit is assigned to any order.
-//        if (includeAbstractOrders) {
-//            for (ConstructionOrder constructionOrder : ConstructionOrder.getAllConstructionOrders()) {
-//                if (this.equals(constructionOrder.getBuilder())) {
-//                    return true;
-//                }
-//            }
-//        }
-//        
-//        return false;
-//    }
+    public WeaponType getWeaponAgainst(Unit target) {
+        if (target.isGroundUnit()) {
+            return getGroundWeapon();
+        }
+        else {
+            return getAirWeapon();
+        }
+    }
+
+    /**
+     * Returns true if given unit belongs to the enemy.
+     */
+    public boolean isEnemy() {
+        return getPlayer().isEnemy();
+    }
+
+    /**
+     * Returns true if given unit is our unit.
+     */
+    public boolean isOur() {
+        return getPlayer().isSelf();
+    }
     
 }

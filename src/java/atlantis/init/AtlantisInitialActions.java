@@ -1,6 +1,6 @@
 package atlantis.init;
 
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 import atlantis.workers.AtlantisMineralGathering;
 
 public class AtlantisInitialActions {

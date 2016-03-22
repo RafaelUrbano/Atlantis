@@ -21,6 +21,14 @@ public class AtlantisProduceUnitManager {
         AtlantisProductionStrategy productionStrategy = AtlantisConfig.getProductionStrategy();
 
         ArrayList<ProductionOrder> produceNow = productionStrategy.getThingsToProduceRightNow(false);
+        
+//        if (!produceNow.isEmpty()) {
+//            System.out.println("== Produce:");
+//            for (ProductionOrder productionOrder : produceNow) {
+//                System.out.println(productionOrder.getUnitType());
+//            }
+//        }
+        
         for (ProductionOrder order : produceNow) {
 
             // =========================================================
@@ -68,7 +76,7 @@ public class AtlantisProduceUnitManager {
             System.err.println("produceBuilding has been given wrong argument: " + unitType);
         }
         
-        AtlantisConstructingManager.requestConstructionOf(unitType, order);
+        AtlantisConstructingManager.requestConstructionOf(unitType, order, null);
     }
     
 //    private static void produceWorker() {

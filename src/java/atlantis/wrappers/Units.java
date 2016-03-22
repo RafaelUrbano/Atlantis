@@ -1,6 +1,6 @@
 package atlantis.wrappers;
 
-import atlantis.util.RUtilities;
+import atlantis.util.AtlantisUtilities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +69,7 @@ public class Units {
      * Returns random unit from the set.
      */
     public Unit random() {
-        return (Unit) RUtilities.getRandomElement(units);
+        return (Unit) AtlantisUtilities.getRandomElement(units);
     }
     
     /**
@@ -93,7 +93,7 @@ public class Units {
      * Returns random units.
      */
     public Unit getRandom() {
-        return (Unit) RUtilities.getRandomListElement(units);
+        return (Unit) AtlantisUtilities.getRandomListElement(units);
     }
 
     /**

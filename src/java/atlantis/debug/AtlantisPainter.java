@@ -14,7 +14,7 @@ import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
 import atlantis.debug.AtlantisPainter;
 import atlantis.production.ProductionOrder;
-import atlantis.util.RUtilities;
+import atlantis.util.AtlantisUtilities;
 import atlantis.workers.AtlantisWorkerManager;
 import atlantis.wrappers.MappingCounter;
 import atlantis.wrappers.SelectUnits;
@@ -246,11 +246,11 @@ public class AtlantisPainter {
         // =========================================================
         if (AtlantisCombatEvaluator.evaluateSituation(unit) < 10) {
             double eval = AtlantisCombatEvaluator.evaluateSituation(unit);
-            if (eval < 999) {
+//            if (eval < 999) {
                 String combatStrength = eval >= 10 ? (BWColor.getColorString(BWColor.Green) + "++")
                         : AtlantisCombatEvaluator.getEvalString(unit);
                 paintTextCentered(new Position(unit.getPX(), unit.getPY() - 15), combatStrength, null);
-            }
+//            }
         }
     }
 
@@ -290,7 +290,7 @@ public class AtlantisPainter {
         }
 
         Map<UnitType, Integer> counters = unitTypesCounter.map();
-        counters = RUtilities.sortByValue(counters, false);
+        counters = AtlantisUtilities.sortByValue(counters, false);
         boolean paintedMessage = false;
         for (UnitType unitType : counters.keySet()) {
             paintSideMessage("+" + counters.get(unitType) + " " + unitType.getName(), BWColor.Blue, 0);
@@ -309,7 +309,7 @@ public class AtlantisPainter {
         }
 
         counters = unitTypesCounter.map();
-        counters = RUtilities.sortByValue(counters, false);
+        counters = AtlantisUtilities.sortByValue(counters, false);
         for (UnitType unitType : counters.keySet()) {
             if (!unitType.isBuilding()) {
                 paintSideMessage(counters.get(unitType) + "x " + unitType.getName(), BWColor.Grey, 0);
@@ -496,7 +496,7 @@ public class AtlantisPainter {
 
             double progress = (double) unit.getHP() / unit.getType().getMaxHitPoints();
             int labelProgress = (int) (1 + 99 * progress);
-            String color = RUtilities.assignStringForValue(
+            String color = AtlantisUtilities.assignStringForValue(
                     progress,
                     1.0,
                     0.0,

@@ -1,7 +1,7 @@
-package atlantis.information;
+package atlantis.enemy;
 
 import atlantis.Atlantis;
-import atlantis.util.RUtilities;
+import atlantis.util.AtlantisUtilities;
 import atlantis.wrappers.Positions;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
@@ -162,8 +162,8 @@ public class AtlantisMap {
         Position position = null;
         for (int attempts = 0; attempts < 10; attempts++) {
             int maxRadius = 30;
-            int dx = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
-            int dy = -maxRadius + RUtilities.rand(0, 2 * maxRadius);
+            int dx = -maxRadius + AtlantisUtilities.rand(0, 2 * maxRadius);
+            int dy = -maxRadius + AtlantisUtilities.rand(0, 2 * maxRadius);
             position = startPoint.translated(dx, dy).makeValid();
             if (!isVisible(position)) {
                 return position;

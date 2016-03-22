@@ -3,7 +3,7 @@ package atlantis.combat.micro;
 import atlantis.Atlantis;
 import atlantis.AtlantisGame;
 import atlantis.combat.AtlantisCombatEvaluator;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 import atlantis.wrappers.SelectUnits;
 import java.util.Collection;
 import jnibwapi.Position;
@@ -33,6 +33,11 @@ public class AtlantisRunning {
      * Indicates that this unit should be running from given enemy unit.
      */
     public boolean runFrom(Unit nearestEnemy) {
+        
+        // if already running, do nothing.
+        if (nextPositionToRunTo != null) {
+            return true;
+        }
         
         // Define position to run to
         nextPositionToRunTo = getPositionAwayFrom(unit, nearestEnemy);

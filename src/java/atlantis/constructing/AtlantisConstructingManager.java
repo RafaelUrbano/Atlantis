@@ -4,7 +4,7 @@ import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
 import atlantis.buildings.managers.AtlantisExpansionManager;
 import atlantis.constructing.position.AtlantisPositionFinder;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.production.ProductionOrder;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
@@ -27,14 +27,22 @@ public class AtlantisConstructingManager {
      * it.
      */
     public static void requestConstructionOf(UnitType building) {
-        requestConstructionOf(building, null);
+        requestConstructionOf(building, null, null);
     }
     
     /**
      * Issues request of constructing new building. It will automatically find position and builder unit for
      * it.
      */
-    public static void requestConstructionOf(UnitType building, ProductionOrder order) {
+    public static void requestConstructionOf(UnitType building, Position near) {
+        requestConstructionOf(building, null, near);
+    }
+    
+    /**
+     * Issues request of constructing new building. It will automatically find position and builder unit for
+     * it.
+     */
+    public static void requestConstructionOf(UnitType building, ProductionOrder order, Position near) {
         
         // Validate request
         if (!building.isBuilding()) {
@@ -62,7 +70,7 @@ public class AtlantisConstructingManager {
         // =========================================================
         // Find place for new building
         Position positionToBuild = AtlantisPositionFinder.getPositionForNew(
-                newConstructionOrder.getBuilder(), building, newConstructionOrder
+                newConstructionOrder.getBuilder(), building, newConstructionOrder, near, 25
         );
 //        System.out.println("@@ " + building + " at " + positionToBuild);
 
@@ -179,12 +187,6 @@ public class AtlantisConstructingManager {
             if (building.isCompleted() && !building.isBeingConstructed()) {
                 order.setStatus(ConstructionOrderStatus.CONSTRUCTION_FINISHED);
                 removeOrder(order);
-
-                // @FIX to fix bug with Refineries not being shown as created, because they're changed.
-                if (building.getType().isGasBuilding()) {
-                    AtlantisUnitInformationManager.forgetUnit(building.getID());
-                    AtlantisUnitInformationManager.rememberUnit(building);
-                }
             }
             else {
                 order.setStatus(ConstructionOrderStatus.CONSTRUCTION_IN_PROGRESS);

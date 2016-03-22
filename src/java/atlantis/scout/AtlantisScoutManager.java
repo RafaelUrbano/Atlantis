@@ -2,9 +2,9 @@ package atlantis.scout;
 
 import atlantis.AtlantisConfig;
 import atlantis.AtlantisGame;
-import atlantis.information.AtlantisEnemyInformationManager;
-import atlantis.information.AtlantisMap;
-import atlantis.information.AtlantisUnitInformationManager;
+import atlantis.enemy.AtlantisEnemyInformation;
+import atlantis.enemy.AtlantisMap;
+import atlantis.enemy.AtlantisEnemyUnits;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
 import jnibwapi.BaseLocation;
@@ -28,7 +28,7 @@ public class AtlantisScoutManager {
         assignScoutIfNeeded();
 
         // We don't know any enemy building, scout nearest starting location.
-        if (!AtlantisEnemyInformationManager.hasDiscoveredEnemyBuilding()) {
+        if (!AtlantisEnemyInformation.hasDiscoveredEnemyBuilding()) {
             for (Unit scout : scouts) {
                 tryToFindEnemy(scout);
             }
@@ -120,7 +120,7 @@ public class AtlantisScoutManager {
 
         // ZERG case
         if (AtlantisGame.playsAsZerg()) {
-            if (AtlantisEnemyInformationManager.hasDiscoveredEnemyBuilding()) { // We know enemy building
+            if (AtlantisEnemyInformation.hasDiscoveredEnemyBuilding()) { // We know enemy building
                 scouts.clear();
                 if (AtlantisGame.getTimeSeconds() < 250) {
                     scouts.add(SelectUnits.ourWorkers().first());
@@ -141,7 +141,7 @@ public class AtlantisScoutManager {
 
         // =========================================================
         // TERRAN + PROTOSSS
-        else if (scouts.isEmpty() && AtlantisUnitInformationManager.countOurWorkers() >= AtlantisConfig.SCOUT_IS_NTH_WORKER) {
+        else if (scouts.isEmpty() && SelectUnits.ourWorkers().count() >= AtlantisConfig.SCOUT_IS_NTH_WORKER) {
             scouts.add(SelectUnits.ourWorkers().first());
         }
     }

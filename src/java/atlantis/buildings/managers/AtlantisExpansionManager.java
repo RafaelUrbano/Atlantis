@@ -8,6 +8,7 @@ import atlantis.production.ProductionOrder;
 import atlantis.production.strategies.AtlantisProductionStrategy;
 import atlantis.wrappers.SelectUnits;
 import java.util.ArrayList;
+import static atlantis.constructing.AtlantisConstructingManager.requestConstructionOf;
 
 /**
  *
@@ -32,15 +33,21 @@ public class AtlantisExpansionManager {
         // =========================================================
         
         boolean haveEnoughMinerals = AtlantisGame.hasMinerals(490)
-                || (AtlantisGame.playsAsZerg() && AtlantisGame.hasMinerals(342));
+                || (AtlantisGame.playsAsZerg() && AtlantisGame.hasMinerals(392));
         boolean haveEnoughBases = SelectUnits.ourBases().count() >= 7 
-                && (!AtlantisGame.playsAsZerg() && SelectUnits.ourLarva().count() >= 2);
+                && (!AtlantisGame.playsAsZerg() && SelectUnits.ourLarva().count() >= 1);
         boolean areWeAlreadyExpanding = 
-                AtlantisConstructingManager.countNotStartedConstructionsOfType(AtlantisConfig.BASE) == 0;
-        boolean allowExtraExpansion = AtlantisGame.hasMinerals(650) &&
-                AtlantisConstructingManager.countNotStartedConstructionsOfType(AtlantisConfig.BASE) <= 1;
+                AtlantisConstructingManager.countNotFinishedConstructionsOfType(AtlantisConfig.BASE) == 0;
+        boolean allowExtraExpansion = AtlantisGame.hasMinerals(750);
         if (haveEnoughMinerals && !haveEnoughBases && (!areWeAlreadyExpanding || allowExtraExpansion)) {
-            requestConstructionOf(AtlantisConfig.BASE);
+            if (AtlantisConstructingManager.countNotFinishedConstructionsOfType(AtlantisConfig.BASE) <= 1) {
+                if (!AtlantisGame.hasMinerals(750)) {
+                    requestConstructionOf(AtlantisConfig.BASE);
+                }
+                else {
+                    requestConstructionOf(AtlantisConfig.BASE, SelectUnits.mainBase());
+                }
+            }
         }
     }
     

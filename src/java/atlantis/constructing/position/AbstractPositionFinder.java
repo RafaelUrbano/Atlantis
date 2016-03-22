@@ -4,7 +4,7 @@ import atlantis.Atlantis;
 import atlantis.constructing.AtlantisConstructingManager;
 import atlantis.constructing.ConstructionOrder;
 import atlantis.constructing.ConstructionOrderStatus;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisMap;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Position;
 import jnibwapi.Unit;
@@ -70,6 +70,9 @@ public abstract class AbstractPositionFinder {
      * could be stacked.
      */
     protected static boolean otherBuildingsTooClose(Unit builder, UnitType building, Position position) {
+        if (builder == null || building == null || position == null) {
+            return false;
+        }
         
         // Compare against existing buildings
         for (Unit otherBuilding : SelectUnits.ourBuildings().list()) {
@@ -82,8 +85,9 @@ public abstract class AbstractPositionFinder {
         
         // Compare against planned construction places
         for (ConstructionOrder constructionOrder : AtlantisConstructingManager.getAllConstructionOrders()) {
-            if (ConstructionOrderStatus.CONSTRUCTION_NOT_STARTED.equals(constructionOrder.getStatus())
-                    && !builder.equals(constructionOrder.getBuilder())) {
+            if (!builder.equals(constructionOrder.getBuilder())) {
+//            if (ConstructionOrderStatus.CONSTRUCTION_NOT_STARTED.equals(constructionOrder.getStatus())
+//                    && !builder.equals(constructionOrder.getBuilder())) {
                 if (constructionOrder.getPositionToBuild() != null) {
                     double distance = constructionOrder.getPositionToBuild().distanceTo(position);
                     if (distance <= 4) {

@@ -1,4 +1,4 @@
-package atlantis.information;
+package atlantis.enemy;
 
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Position;
@@ -7,17 +7,17 @@ import jnibwapi.Unit;
 /**
  * Provides various useful infromation about the enemy whereabouts or if even know any enemy building.
  */
-public class AtlantisEnemyInformationManager {
+public class AtlantisEnemyInformation {
 
     /**
      * Returns true if we learned the location of any still-existing enemy building.
      */
     public static boolean hasDiscoveredEnemyBuilding() {
-        if (AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
+        if (AtlantisEnemyUnits.enemyUnitsDiscovered.isEmpty()) {
             return false;
         }
 
-        for (Unit enemy : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (Unit enemy : AtlantisEnemyUnits.enemyUnitsDiscovered) {
             if (enemy.isBuilding()) {
                 return true;
             }
@@ -34,7 +34,7 @@ public class AtlantisEnemyInformationManager {
             return null;
         }
 
-        for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (Unit enemyUnit : AtlantisEnemyUnits.enemyUnitsDiscovered) {
             if (enemyUnit.isBase()) {
                 return enemyUnit;
             }
@@ -48,7 +48,7 @@ public class AtlantisEnemyInformationManager {
      */
     public static Position getEnemyBase() {
 //        System.out.println(AtlantisUnitInformationManager.enemyUnitsDiscovered.size());
-        for (Unit enemyUnit : AtlantisUnitInformationManager.enemyUnitsDiscovered) {
+        for (Unit enemyUnit : AtlantisEnemyUnits.enemyUnitsDiscovered) {
 //            System.out.println(enemyUnit);
             if (enemyUnit.isBase() && enemyUnit.isAlive()) {
                 return enemyUnit;
@@ -63,8 +63,8 @@ public class AtlantisEnemyInformationManager {
      */
     public static Unit getNearestEnemyBuilding() {
         Unit mainBase = SelectUnits.mainBase();
-        if (mainBase != null && !AtlantisUnitInformationManager.enemyUnitsDiscovered.isEmpty()) {
-            return SelectUnits.from(AtlantisUnitInformationManager.enemyUnitsDiscovered).buildings().nearestTo(mainBase);
+        if (mainBase != null && !AtlantisEnemyUnits.enemyUnitsDiscovered.isEmpty()) {
+            return SelectUnits.from(AtlantisEnemyUnits.enemyUnitsDiscovered).buildings().nearestTo(mainBase);
         }
         return null;
     }

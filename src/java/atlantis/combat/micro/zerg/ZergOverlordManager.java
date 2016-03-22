@@ -1,8 +1,8 @@
 package atlantis.combat.micro.zerg;
 
 import atlantis.combat.group.AtlantisGroupManager;
-import atlantis.information.AtlantisEnemyInformationManager;
-import atlantis.information.AtlantisMap;
+import atlantis.enemy.AtlantisEnemyInformation;
+import atlantis.enemy.AtlantisMap;
 import atlantis.scout.AtlantisScoutManager;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Position;
@@ -17,7 +17,7 @@ public class ZergOverlordManager {
     public static void update(Unit unit) {
 
         // We know enemy building
-        if (AtlantisEnemyInformationManager.hasDiscoveredEnemyBuilding()) {
+        if (AtlantisEnemyInformation.hasDiscoveredEnemyBuilding()) {
             actWhenWeKnowEnemy(unit);
         } 
 

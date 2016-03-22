@@ -311,7 +311,12 @@ public class WeaponType {
     // =========================================================
     
     public double getDamageNormalized() {
-        return getDamageAmount() * getDamageFactor();
+        if (this.equals(WeaponTypes.Psi_Blades)) {
+            return 16;
+        }
+        else {
+            return getDamageAmount() * getDamageFactor();
+        }
     }
     
 }
