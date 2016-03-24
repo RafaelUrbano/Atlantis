@@ -22,6 +22,7 @@ public class AtlantisProductionCommander {
         
         // Check if we should automatically build new base, because we have shitload of minerals.
         AtlantisExpansionManager.requestNewBaseIfNeeded();
+        AtlantisExpansionManager.requestNewGasBuildingIfNeeded();
     }
 
 }

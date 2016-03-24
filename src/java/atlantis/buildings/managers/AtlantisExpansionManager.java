@@ -50,5 +50,8 @@ public class AtlantisExpansionManager {
             }
         }
     }
+
+    public static void requestNewGasBuildingIfNeeded() {
+    }
     
 }

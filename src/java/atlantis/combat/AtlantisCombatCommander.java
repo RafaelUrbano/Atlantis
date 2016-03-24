@@ -5,6 +5,7 @@ import atlantis.combat.group.AtlantisGroupManager;
 import atlantis.combat.group.Group;
 import atlantis.combat.group.missions.Mission;
 import atlantis.combat.group.missions.Missions;
+import atlantis.combat.micro.terran.TerranMedic;
 import atlantis.combat.micro.zerg.ZergOverlordManager;
 import atlantis.wrappers.SelectUnits;
 import jnibwapi.Unit;
@@ -72,18 +73,31 @@ public class AtlantisCombatCommander {
     }
 
     /**
-     * There are some units that should have individual micro managers like Zerg Overlord. If unit is special
-     * unit it will run proper micro managers here and return true, meaning no other managers should be used.
-     * False will give command to standard Melee of Micro managers.
+     * There are some units that should have individual micro managers like Zerg Overlord or Terran Medic. 
+     * If unit is special unit it will run proper micro managers here and return <b>true</b>, 
+     * meaning no other managers should be used.
+     * <b>False</b> will give command to standard micro manager.
      */
     private static boolean handledAsSpecialUnit(Unit unit) {
-        if (unit.getType().equals(UnitType.UnitTypes.Zerg_Overlord)) {
-            ZergOverlordManager.update(unit);
-            unit.setTooltip("Overlord");
-            return true;
-        } else {
-            return false;
+        
+        // ZERG
+        if (AtlantisGame.playsAsZerg()) {
+            if (unit.isType(UnitType.UnitTypes.Zerg_Overlord)) {
+                ZergOverlordManager.update(unit);
+                return true;
+            }
         }
+        
+        // =========================================================
+        // TERRAN
+        else if (AtlantisGame.playsAsTerran()) {
+            if (unit.isType(UnitType.UnitTypes.Terran_Medic)) {
+                TerranMedic.update(unit);
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**

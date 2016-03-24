@@ -15,11 +15,6 @@ public class DefaultRangedManager extends MicroRangedManager {
     public boolean update(Unit unit) {
         if (canIssueOrderToUnit(unit)) {
 
-            // SPECIAL UNIT TYPE action
-            if (handleSpecialUnit(unit)) {
-                return true;
-            }
-
             // =========================================================
             // Check health status
             if (handleLowHealthIfNeeded(unit)) {
@@ -73,32 +68,6 @@ public class DefaultRangedManager extends MicroRangedManager {
      */
     private boolean canIssueOrderToUnit(Unit unit) {
         return !unit.isJustShooting();
-    }
-
-    /**
-     * There are special units like Terran Marines, Zerg Overlords that should be following different
-     * behavior than standard combat units.
-     */
-    private boolean handleSpecialUnit(Unit unit) {
-        
-        // ZERG
-        if (AtlantisGame.playsAsZerg()) {
-            if (unit.isType(UnitType.UnitTypes.Zerg_Overlord)) {
-                ZergOverlordManager.update(unit);
-                return true;
-            }
-        }
-        
-        // =========================================================
-        // TERRAN
-        if (AtlantisGame.playsAsTerran()) {
-            if (unit.isType(UnitType.UnitTypes.Terran_Medic)) {
-                TerranMedic.update(unit);
-                return true;
-            }
-        }
-        
-        return false;
     }
 
     /**

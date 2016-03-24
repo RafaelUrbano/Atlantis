@@ -280,7 +280,7 @@ public class Atlantis implements BWAPIEventListener {
         // =========================================================
         // Game SPEED change
         if (AtlantisConfig.USE_DYNAMIC_GAME_SPEED_SLOWDOWN 
-                && !_dynamicSlowdown_isSlowdownActive && !unit.isBuilding()) {
+                && !_dynamicSlowdown_isSlowdownActive && unit != null && !unit.isBuilding()) {
             activateDynamicSlowdownMode();
         }
     }
@@ -409,8 +409,8 @@ public class Atlantis implements BWAPIEventListener {
         // =========================================================
         // 107 (+) - increase game speed
         else if (keyCode == 107) {
-            if (AtlantisConfig.GAME_SPEED > 2) {
-                AtlantisConfig.GAME_SPEED -= 10;
+            if (AtlantisConfig.GAME_SPEED >= 2) {
+                AtlantisConfig.GAME_SPEED -= 18;
             }
             else {
                 AtlantisConfig.GAME_SPEED -= 2;
@@ -425,8 +425,8 @@ public class Atlantis implements BWAPIEventListener {
         // =========================================================
         // 109 (-) - decrease game speed
         else if (keyCode == 109) {
-            if (AtlantisConfig.GAME_SPEED > 2) {
-                AtlantisConfig.GAME_SPEED += 10;
+            if (AtlantisConfig.GAME_SPEED >= 2) {
+                AtlantisConfig.GAME_SPEED += 18;
             }
             else {
                 AtlantisConfig.GAME_SPEED += 2;

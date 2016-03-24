@@ -125,7 +125,8 @@ public abstract class AtlantisProductionStrategy {
                 UnitType type = order.getUnitType();
                 virtualCounter.incrementValueFor(type);
 
-                int shouldHaveThisManyUnits = (type.isWorker() ? 4 : 0) + virtualCounter.getValueFor(type);
+                int shouldHaveThisManyUnits = (type.isWorker() ? 4 : 0) 
+                        + (type.isBase()? 1 : 0) + virtualCounter.getValueFor(type);
                 int weHaveThisManyUnits = countUnitsOfGivenTypeOrSimilar(type);
 
                 if (type.isBuilding()) {
@@ -133,6 +134,9 @@ public abstract class AtlantisProductionStrategy {
                 }
                 
                 // If we don't have this unit, add it to the current production queue.
+                if (type.isBase()) {
+                    System.out.println(weHaveThisManyUnits + " / " +  shouldHaveThisManyUnits);
+                }
                 if (weHaveThisManyUnits < shouldHaveThisManyUnits) {
                     isOkayToAdd = true;
                 }

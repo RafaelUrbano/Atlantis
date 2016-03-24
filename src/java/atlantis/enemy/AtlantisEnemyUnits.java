@@ -64,7 +64,7 @@ public class AtlantisEnemyUnits {
      * Saves information about given unit being destroyed, so counting units works properly.
      */
     public static void unitDestroyed(Unit unit) {
-        System.out.println("Destroyed " + unit + " / " + unit.getID() + " / enemy: " + unit.isEnemy());
+//        System.out.println("Destroyed " + unit + " / " + unit.getID() + " / enemy: " + unit.isEnemy());
         enemyUnitsDiscovered.remove(unit);
     }
 
